@@ -60,7 +60,8 @@ app.get('/api/workouts', async (_req, res) => {
   try {
     const workouts = JSON.parse(await readFile(WORKOUTS_FILE, 'utf-8'))
     res.json(workouts)
-  } catch {
+  } catch (err) {
+    console.error('Lỗi đọc workouts.json:', err.message, '| path:', WORKOUTS_FILE)
     res.status(500).json({ error: 'Không thể đọc dữ liệu lịch tập' })
   }
 })
@@ -70,7 +71,8 @@ app.get('/api/nutrition', async (_req, res) => {
   try {
     const meals = JSON.parse(await readFile(NUTRITION_FILE, 'utf-8'))
     res.json(meals)
-  } catch {
+  } catch (err) {
+    console.error('Lỗi đọc nutrition.json:', err.message, '| path:', NUTRITION_FILE)
     res.status(500).json({ error: 'Không thể đọc dữ liệu dinh dưỡng' })
   }
 })
@@ -217,4 +219,6 @@ app.delete('/api/contacts/:id', verifyToken, (req, res) => {
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
   console.log(`Server đang chạy tại http://localhost:${PORT}`)
+  console.log('WORKOUTS_FILE:', WORKOUTS_FILE)
+  console.log('NUTRITION_FILE:', NUTRITION_FILE)
 })
