@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import API_BASE_URL from '../config/api.js'
 
 const goals = ['Tất cả', 'Giảm mỡ', 'Tăng cơ', 'Duy trì']
 
@@ -17,7 +18,7 @@ export default function Nutrition() {
   const [expanded, setExpanded] = useState(null)
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/nutrition`)
+    fetch(`${API_BASE_URL}/api/nutrition`)
       .then(res => {
         if (!res.ok) throw new Error('Server lỗi')
         return res.json()

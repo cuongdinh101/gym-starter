@@ -1,5 +1,6 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
+import API_BASE_URL from '../config/api.js'
 
 const LIMIT = 10
 
@@ -37,7 +38,7 @@ export default function Admin() {
     const params = new URLSearchParams({ page: pageNum, limit: LIMIT, sort: sortStr })
     if (searchStr) params.set('search', searchStr)
     const res = await fetch(
-      `${import.meta.env.VITE_API_URL}/api/${tabName}?${params}`,
+      `${API_BASE_URL}/api/${tabName}?${params}`,
       { headers: authHeader() }
     )
     if (res.status === 401) { handleUnauthorized(); throw new Error('401') }
@@ -116,7 +117,7 @@ export default function Admin() {
     setDeletingId(id)
     setDeleteError('')
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/${type}/${id}`, {
+      const res = await fetch(`${API_BASE_URL}/api/${type}/${id}`, {
         method: 'DELETE',
         headers: authHeader(),
       })

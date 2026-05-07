@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import API_BASE_URL from '../config/api.js'
 
 export default function Workout() {
   const [schedule, setSchedule] = useState([])
@@ -7,7 +8,7 @@ export default function Workout() {
   const [expanded, setExpanded] = useState(null)
 
   useEffect(() => {
-    fetch(`${import.meta.env.VITE_API_URL}/api/workouts`)
+    fetch(`${API_BASE_URL}/api/workouts`)
       .then(res => {
         if (!res.ok) throw new Error('Server lỗi')
         return res.json()

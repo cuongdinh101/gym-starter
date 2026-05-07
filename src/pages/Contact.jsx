@@ -1,5 +1,6 @@
 import { useState } from 'react'
 import { Link } from 'react-router-dom'
+import API_BASE_URL from '../config/api.js'
 
 const subjectOptions = [
   'Tư vấn lịch tập',
@@ -35,7 +36,7 @@ export default function Contact() {
     setLoading(true)
     setServerError('')
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/contacts`, {
+      const res = await fetch(`${API_BASE_URL}/api/contacts`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),

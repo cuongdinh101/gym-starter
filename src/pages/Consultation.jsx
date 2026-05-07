@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import API_BASE_URL from '../config/api.js'
 
 const goals = [
   'Giảm mỡ / Giảm cân',
@@ -51,7 +52,7 @@ export default function Consultation() {
     setLoading(true)
     setServerError('')
     try {
-      const res = await fetch(`${import.meta.env.VITE_API_URL}/api/consultations`, {
+      const res = await fetch(`${API_BASE_URL}/api/consultations`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(form),
