@@ -1,0 +1,99 @@
+[
+  {
+    "day": "Thứ 2",
+    "label": "Ngực",
+    "icon": "🏋️",
+    "color": "from-orange-500/20 to-red-500/10",
+    "border": "border-orange-500/30",
+    "accent": "text-orange-400",
+    "exercises": [
+      { "name": "Hít đất (Push-ups)", "sets": 3, "reps": "10–12 lần", "rest": "60 giây", "note": "Giữ lưng thẳng, hạ người từ từ." },
+      { "name": "Dumbbell chest press", "sets": 3, "reps": "12 lần", "rest": "60 giây", "note": "Nằm ngửa, đẩy tạ thẳng lên trên." },
+      { "name": "Dumbbell fly", "sets": 3, "reps": "10 lần", "rest": "60 giây", "note": "Cánh tay hơi cong, cảm nhận căng ở ngực." },
+      { "name": "Incline push-up", "sets": 3, "reps": "12 lần", "rest": "45 giây", "note": "Tựa tay lên ghế để giảm khó khăn." }
+    ]
+  },
+  {
+    "day": "Thứ 3",
+    "label": "Lưng",
+    "icon": "🔙",
+    "color": "from-blue-500/20 to-cyan-500/10",
+    "border": "border-blue-500/30",
+    "accent": "text-blue-400",
+    "exercises": [
+      { "name": "Dumbbell bent-over row", "sets": 3, "reps": "12 lần", "rest": "60 giây", "note": "Giữ lưng thẳng, kéo tạ về phía hông." },
+      { "name": "Lat pulldown (máy)", "sets": 3, "reps": "12 lần", "rest": "60 giây", "note": "Kéo thanh xuống ngang cằm, không lắc người." },
+      { "name": "Seated cable row", "sets": 3, "reps": "12 lần", "rest": "60 giây", "note": "Kéo về bụng, siết lưng khi hoàn thành." },
+      { "name": "Superman hold", "sets": 3, "reps": "15 giây/lần", "rest": "30 giây", "note": "Nằm sấp, nâng tay và chân lên cùng lúc." }
+    ]
+  },
+  {
+    "day": "Thứ 4",
+    "label": "Chân",
+    "icon": "🦵",
+    "color": "from-green-500/20 to-teal-500/10",
+    "border": "border-green-500/30",
+    "accent": "text-green-400",
+    "exercises": [
+      { "name": "Squat (không tạ)", "sets": 3, "reps": "15 lần", "rest": "90 giây", "note": "Gối không vượt qua mũi chân, ngồi thấp vừa phải." },
+      { "name": "Lunges (bước chân)", "sets": 3, "reps": "10 lần/chân", "rest": "60 giây", "note": "Bước dài, gối sau gần chạm sàn." },
+      { "name": "Calf raise (nhón gót)", "sets": 3, "reps": "20 lần", "rest": "45 giây", "note": "Có thể làm trên bậc thang để tăng biên độ." },
+      { "name": "Glute bridge", "sets": 3, "reps": "15 lần", "rest": "45 giây", "note": "Nằm ngửa, nâng hông lên, siết mông ở trên cùng." }
+    ]
+  },
+  {
+    "day": "Thứ 5",
+    "label": "Vai",
+    "icon": "💪",
+    "color": "from-purple-500/20 to-indigo-500/10",
+    "border": "border-purple-500/30",
+    "accent": "text-purple-400",
+    "exercises": [
+      { "name": "Dumbbell shoulder press", "sets": 3, "reps": "12 lần", "rest": "60 giây", "note": "Đẩy thẳng lên trên, không khóa khuỷu tay." },
+      { "name": "Lateral raise (dang ngang)", "sets": 3, "reps": "15 lần", "rest": "45 giây", "note": "Dùng tạ nhẹ, nâng tay đến ngang vai." },
+      { "name": "Front raise (nâng trước)", "sets": 3, "reps": "12 lần", "rest": "45 giây", "note": "Nâng tạ thẳng về phía trước, đến ngang vai." },
+      { "name": "Rear delt fly", "sets": 3, "reps": "12 lần", "rest": "45 giây", "note": "Cúi người 45°, dang tay ra hai bên." }
+    ]
+  },
+  {
+    "day": "Thứ 6",
+    "label": "Tay",
+    "icon": "💪",
+    "color": "from-yellow-500/20 to-orange-500/10",
+    "border": "border-yellow-500/30",
+    "accent": "text-yellow-400",
+    "exercises": [
+      { "name": "Bicep curl", "sets": 3, "reps": "12 lần", "rest": "45 giây", "note": "Giữ khuỷu tay sát người, cuộn tạ lên chậm." },
+      { "name": "Hammer curl", "sets": 3, "reps": "12 lần", "rest": "45 giây", "note": "Tay cầm dọc, tập thêm cơ cánh tay trước." },
+      { "name": "Tricep dip (ghế)", "sets": 3, "reps": "10–12 lần", "rest": "60 giây", "note": "Dùng ghế tựa, hạ người từ từ." },
+      { "name": "Overhead tricep extension", "sets": 3, "reps": "12 lần", "rest": "45 giây", "note": "Giữ khuỷu tay cố định, duỗi thẳng tay lên." }
+    ]
+  },
+  {
+    "day": "Thứ 7",
+    "label": "Bụng + Cardio",
+    "icon": "🔥",
+    "color": "from-red-500/20 to-pink-500/10",
+    "border": "border-red-500/30",
+    "accent": "text-red-400",
+    "exercises": [
+      { "name": "Plank", "sets": 3, "reps": "30 giây/lần", "rest": "30 giây", "note": "Giữ thẳng người từ đầu đến gót chân." },
+      { "name": "Crunches (gập bụng)", "sets": 3, "reps": "20 lần", "rest": "30 giây", "note": "Không kéo cổ, nâng người bằng cơ bụng." },
+      { "name": "Leg raise (nâng chân)", "sets": 3, "reps": "15 lần", "rest": "45 giây", "note": "Giữ lưng sát sàn, nâng chân thẳng." },
+      { "name": "Cardio nhẹ", "sets": 1, "reps": "15–20 phút", "rest": "—", "note": "Đi bộ nhanh, chạy nhẹ hoặc nhảy dây." }
+    ]
+  },
+  {
+    "day": "Chủ nhật",
+    "label": "Nghỉ ngơi",
+    "icon": "🧘",
+    "color": "from-gray-500/20 to-gray-600/10",
+    "border": "border-gray-500/30",
+    "accent": "text-gray-400",
+    "exercises": [
+      { "name": "Đi bộ nhẹ", "sets": 1, "reps": "20–30 phút", "rest": "—", "note": "Đi bộ thư giãn, không cần cường độ cao." },
+      { "name": "Stretching toàn thân", "sets": 1, "reps": "10–15 phút", "rest": "—", "note": "Giãn các nhóm cơ đã tập trong tuần." },
+      { "name": "Foam rolling (nếu có)", "sets": 1, "reps": "5–10 phút", "rest": "—", "note": "Lăn nhẹ để giảm đau cơ và tăng phục hồi." }
+    ]
+  }
+]
