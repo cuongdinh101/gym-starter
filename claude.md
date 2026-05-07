@@ -39,6 +39,8 @@ npm run dev
 | Lịch tập | `/workout` | `Workout.jsx` | Fetch GET /api/workouts |
 | Dinh dưỡng | `/nutrition` | `Nutrition.jsx` | Fetch GET /api/nutrition, filter |
 | Tính BMI | `/bmi` | `BMI.jsx` | Local calculation, metric/imperial |
+| Blog | `/blog` | `Blog.jsx` | Danh sách 7 bài viết, filter theo category |
+| Chi tiết bài viết | `/blog/:slug` | `BlogPost.jsx` | Render structured content, CTA tư vấn |
 | Đăng ký tư vấn | `/consultation` | `Consultation.jsx` | Form → POST /api/consultations |
 | Liên hệ | `/contact` | `Contact.jsx` | Form → POST /api/contacts |
 | Đăng nhập Admin | `/login` | `Login.jsx` | POST /api/auth/login → JWT |
@@ -90,11 +92,15 @@ du_an_ca_nhan/
     components/
       Navbar.jsx            # Fixed nav; ẩn Admin link khi chưa login
       ProtectedRoute.jsx    # Guard: kiểm tra localStorage token trước khi render /admin
+    data/
+      posts.js              # 7 bài viết Blog tĩnh (không cần backend)
     pages/
       Home.jsx
       Workout.jsx           # useEffect fetch /api/workouts
       Nutrition.jsx         # useEffect fetch /api/nutrition, filter theo goal
       BMI.jsx               # Tính local, không cần API
+      Blog.jsx              # Danh sách bài viết, filter theo category
+      BlogPost.jsx          # Chi tiết bài viết (useParams slug), related posts
       Consultation.jsx      # Form → POST /api/consultations
       Contact.jsx           # Form → POST /api/contacts
       Login.jsx             # Form đăng nhập Admin
@@ -187,8 +193,9 @@ const Workout = lazy(() => import('./pages/Workout'))
 const Admin   = lazy(() => import('./pages/Admin'))   // chỉ tải khi vào /admin
 ```
 
-- Bundle ban đầu chỉ chứa Home + React + Router (~235 KB)
-- Mỗi trang tải thêm 1 chunk JS nhỏ lần đầu navigate (~2–12 KB), sau đó browser cache
+- Bundle ban đầu chứa Home + React + Router + posts.js data (~257 KB)
+- Mỗi trang tải thêm 1 chunk JS nhỏ lần đầu navigate (~2–15 KB), sau đó browser cache
+- `posts.js` nằm trong initial bundle vì Home.jsx (eager) import để hiển thị blog preview
 
 ### Cold start hint (Workout & Nutrition)
 
@@ -197,15 +204,33 @@ Sau 5 giây vẫn loading → hiện text nhỏ:
 
 Dùng `useState(false)` + `useEffect` + `setTimeout(5000)` với cleanup `clearTimeout`.
 
+## Blog/Tips — Static Content (đã hoàn thành 2026-05-07)
+
+**7 bài viết** trong `src/data/posts.js` — không cần backend, không cần fetch:
+
+| Category | Số bài | Ví dụ |
+|----------|--------|-------|
+| Cơ bản | 2 | 5 Nguyên Tắc Vàng, 6 Bài Tập Cơ Bản |
+| Dinh dưỡng | 2 | Chế Độ Dinh Dưỡng, Protein Bao Nhiêu Là Đủ |
+| Phục hồi | 1 | Tầm Quan Trọng Của Phục Hồi |
+| Giảm cân | 1 | Giảm Mỡ Không Nhịn Đói |
+| Tăng cơ | 1 | Tránh 5 Sai Lầm Khi Tăng Cơ |
+
+**Cấu trúc mỗi post:** `{ id, slug, title, excerpt, category, coverEmoji, readTime, publishedAt, content[] }`
+
+**Content blocks:** `paragraph` | `heading` | `list` | `tip` — render bằng switch/case, không dùng `dangerouslySetInnerHTML`.
+
+**Slug không tồn tại** → BlogPost hiển thị inline "Bài viết không tồn tại" + link về `/blog`.
+
 ## Việc nên làm tiếp theo (chưa làm)
 
-- **MySQL/AWS RDS:** Thay SQLite bằng MySQL có persistent storage — Railway/PlanetScale cho cloud free tier
+- **Admin CRUD Blog posts:** Cho phép admin thêm/sửa/xóa bài viết blog qua giao diện (hiện tại static trong `posts.js`)
 - **Admin CRUD Workout/Nutrition:** Cho phép admin thêm/sửa/xóa lịch tập và bữa ăn qua giao diện
+- **MySQL/AWS RDS:** Thay SQLite bằng MySQL có persistent storage — Railway/PlanetScale cho cloud free tier
 - **Input validation backend:** Validate email format, độ dài field ở server
 - **Refresh token:** Token 8h hết hạn → user bị logout; thêm refresh token flow
 - **CI/CD:** GitHub Actions auto-deploy khi push main
 - **Custom domain:** Thêm domain riêng thay `*.vercel.app` / `*.onrender.com`
-- **UI polish:** Loading skeleton, animation, responsive tweaks
 
 ## Rules chi tiết
 
