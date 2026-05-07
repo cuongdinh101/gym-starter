@@ -16,6 +16,7 @@ export default function Nutrition() {
   const [error, setError] = useState(null)
   const [selected, setSelected] = useState('Tất cả')
   const [expanded, setExpanded] = useState(null)
+  const [showSlowHint, setShowSlowHint] = useState(false)
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/nutrition`)
@@ -32,6 +33,12 @@ export default function Nutrition() {
         setLoading(false)
       })
   }, [])
+
+  useEffect(() => {
+    if (!loading) return
+    const t = setTimeout(() => setShowSlowHint(true), 5000)
+    return () => clearTimeout(t)
+  }, [loading])
 
   const filtered = selected === 'Tất cả' ? meals : meals.filter(m => m.goal === selected)
 
@@ -81,9 +88,15 @@ export default function Nutrition() {
 
         {/* Loading */}
         {loading && (
-          <div className="text-center py-20 text-gray-400">
-            <div className="text-4xl mb-4">⏳</div>
-            <p>Đang tải dữ liệu dinh dưỡng...</p>
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {Array.from({ length: 6 }).map((_, i) => (
+              <div key={i} className="skeleton h-[300px] rounded-2xl" />
+            ))}
+            {showSlowHint && (
+              <p className="col-span-full text-center text-sm text-gray-500 pt-2">
+                Server đang khởi động, vui lòng đợi thêm vài giây...
+              </p>
+            )}
           </div>
         )}
 

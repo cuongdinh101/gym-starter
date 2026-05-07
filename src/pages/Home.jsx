@@ -1,4 +1,5 @@
 import { Link } from 'react-router-dom'
+import { posts } from '../data/posts'
 
 const features = [
   {
@@ -114,6 +115,39 @@ export default function Home() {
         </div>
       </section>
 
+      {/* Blog Preview */}
+      <section className="py-24 max-w-6xl mx-auto px-4">
+        <div className="flex items-end justify-between mb-10 flex-wrap gap-4">
+          <div>
+            <div className="inline-block bg-orange-500/20 text-orange-400 text-sm font-semibold px-4 py-1.5 rounded-full mb-3 border border-orange-500/30">
+              📚 Tips & Kiến thức
+            </div>
+            <h2 className="text-4xl font-black text-white">
+              Bài viết <span className="gradient-text">mới nhất</span>
+            </h2>
+          </div>
+          <Link to="/blog" className="text-orange-400 hover:text-orange-300 font-semibold text-sm transition-colors">
+            Xem tất cả →
+          </Link>
+        </div>
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
+          {posts.slice(0, 3).map(post => (
+            <Link
+              key={post.slug}
+              to={`/blog/${post.slug}`}
+              className="group bg-white/5 border border-white/10 rounded-2xl p-6 flex flex-col hover:border-orange-500/30 transition-all card-hover"
+            >
+              <div className="text-3xl mb-3">{post.coverEmoji}</div>
+              <div className="text-xs text-gray-500 font-semibold mb-2 uppercase tracking-wide">{post.category}</div>
+              <h3 className="text-base font-black text-white mb-3 group-hover:text-orange-400 transition-colors leading-snug flex-1">
+                {post.title}
+              </h3>
+              <div className="text-xs text-gray-500">📖 {post.readTime} phút đọc</div>
+            </Link>
+          ))}
+        </div>
+      </section>
+
       {/* CTA Banner */}
       <section className="py-24 px-4">
         <div
@@ -135,22 +169,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-white/10 py-10 px-4">
-        <div className="max-w-6xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-          <div className="flex items-center gap-2">
-            <span className="text-xl font-black gradient-text">Gym</span>
-            <span className="text-xl font-black text-white">Starter</span>
-          </div>
-          <p className="text-gray-500 text-sm">© 2026 Gym Starter. Dành cho người mới bắt đầu tập gym.</p>
-          <div className="flex gap-4 text-gray-400 text-sm">
-            <Link to="/workout" className="hover:text-white transition-colors">Lịch tập</Link>
-            <Link to="/nutrition" className="hover:text-white transition-colors">Dinh dưỡng</Link>
-            <Link to="/bmi" className="hover:text-white transition-colors">BMI</Link>
-            <Link to="/contact" className="hover:text-white transition-colors">Liên hệ</Link>
-          </div>
-        </div>
-      </footer>
     </div>
   )
 }

@@ -1,6 +1,7 @@
 import { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import API_BASE_URL from '../config/api.js'
+import Toast from '../components/Toast.jsx'
 
 const LIMIT = 10
 
@@ -17,7 +18,9 @@ export default function Admin() {
   const [tab, setTab] = useState('consultations')
   const [page, setPage] = useState(1)
   const [deletingId, setDeletingId] = useState(null)
+  const [confirmId, setConfirmId] = useState(null)
   const [deleteError, setDeleteError] = useState('')
+  const [toast, setToast] = useState(null)
   const [search, setSearch] = useState('')
   const [debouncedSearch, setDebouncedSearch] = useState('')
   const [sort, setSort] = useState('newest')
@@ -113,7 +116,7 @@ export default function Admin() {
   }
 
   async function handleDelete(type, id) {
-    if (!window.confirm('Xác nhận xóa bản ghi này?')) return
+    setConfirmId(null)
     setDeletingId(id)
     setDeleteError('')
     try {
@@ -126,10 +129,10 @@ export default function Admin() {
         const data = await res.json().catch(() => ({}))
         throw new Error(data.error || 'Xóa thất bại')
       }
-      // Nếu vừa xóa bản ghi cuối cùng trên trang > 1 → lùi về trang trước
+      setToast({ message: 'Đã xóa bản ghi thành công', type: 'success' })
       const currentList = type === 'consultations' ? consultations : contacts
       if (currentList.length === 1 && page > 1) {
-        setPage(p => p - 1) // thay đổi page sẽ trigger fetchAndUpdate
+        setPage(p => p - 1)
       } else {
         fetchAndUpdate(type, page, debouncedSearch, sort)
       }
@@ -148,6 +151,7 @@ export default function Admin() {
   }
 
   return (
+    <>
     <div className="min-h-screen pt-24 pb-16 px-4">
       <div className="max-w-6xl mx-auto">
 
@@ -180,31 +184,35 @@ export default function Admin() {
           <>
             {/* Stat cards */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-10">
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                <div className="text-3xl font-black gradient-text">{cTotal}</div>
-                <div className="text-gray-400 text-sm mt-1">Đăng ký tư vấn</div>
-              </div>
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                <div className="text-3xl font-black gradient-text">{kTotal}</div>
-                <div className="text-gray-400 text-sm mt-1">Liên hệ</div>
-              </div>
-              <div className="bg-white/5 border border-white/10 rounded-2xl p-6">
-                <div className="text-3xl font-black gradient-text">{LIMIT}</div>
-                <div className="text-gray-400 text-sm mt-1">Bản ghi mỗi trang</div>
-              </div>
+              {[
+                { value: cTotal, label: 'Đăng ký tư vấn', icon: '🤝', color: 'from-orange-500 to-red-500' },
+                { value: kTotal, label: 'Liên hệ', icon: '📬', color: 'from-blue-500 to-cyan-500' },
+                { value: LIMIT, label: 'Bản ghi / trang', icon: '📋', color: 'from-purple-500 to-pink-500' },
+              ].map(card => (
+                <div key={card.label} className="bg-white/5 border border-white/10 rounded-2xl p-6 relative overflow-hidden">
+                  <div className={`absolute top-0 left-0 right-0 h-0.5 bg-gradient-to-r ${card.color}`} />
+                  <div className="flex items-start justify-between mb-2">
+                    <div className="text-3xl font-black gradient-text">{card.value}</div>
+                    <div className="p-2 bg-white/5 rounded-xl text-xl">{card.icon}</div>
+                  </div>
+                  <div className="text-gray-400 text-sm">{card.label}</div>
+                </div>
+              ))}
             </div>
 
             {/* Error xóa */}
             {deleteError && (
-              <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-5 py-3 mb-6 text-red-400 text-sm">
-                ⚠️ {deleteError}
+              <div className="bg-red-500/10 border border-red-500/30 rounded-xl px-5 py-3 mb-6 text-red-400 text-sm flex items-center gap-2">
+                <span>⚠️</span>
+                <span className="flex-1">{deleteError}</span>
+                <button onClick={() => setDeleteError('')} className="opacity-50 hover:opacity-100 transition-opacity">✕</button>
               </div>
             )}
 
             {/* Tabs */}
             <div className="flex gap-3 mb-5">
               <button
-                onClick={() => { setTab('consultations'); setPage(1) }}
+                onClick={() => { setTab('consultations'); setPage(1); setConfirmId(null) }}
                 className={`px-5 py-2 rounded-full font-semibold text-sm transition-all ${
                   tab === 'consultations'
                     ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
@@ -214,7 +222,7 @@ export default function Admin() {
                 🤝 Đăng ký tư vấn ({cTotal})
               </button>
               <button
-                onClick={() => { setTab('contacts'); setPage(1) }}
+                onClick={() => { setTab('contacts'); setPage(1); setConfirmId(null) }}
                 className={`px-5 py-2 rounded-full font-semibold text-sm transition-all ${
                   tab === 'contacts'
                     ? 'bg-gradient-to-r from-orange-500 to-red-500 text-white'
@@ -284,8 +292,11 @@ export default function Admin() {
                             <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{formatDate(c.createdAt)}</td>
                             <td className="px-4 py-3">
                               <DeleteButton
-                                onClick={() => handleDelete('consultations', c.id)}
-                                loading={deletingId === c.id}
+                                onConfirm={() => setConfirmId(c.id)}
+                                onDelete={() => handleDelete('consultations', c.id)}
+                                onCancel={() => setConfirmId(null)}
+                                isConfirming={confirmId === c.id}
+                                isDeleting={deletingId === c.id}
                               />
                             </td>
                           </tr>
@@ -346,8 +357,11 @@ export default function Admin() {
                             <td className="px-4 py-3 text-gray-500 whitespace-nowrap">{formatDate(c.createdAt)}</td>
                             <td className="px-4 py-3">
                               <DeleteButton
-                                onClick={() => handleDelete('contacts', c.id)}
-                                loading={deletingId === c.id}
+                                onConfirm={() => setConfirmId(c.id)}
+                                onDelete={() => handleDelete('contacts', c.id)}
+                                onCancel={() => setConfirmId(null)}
+                                isConfirming={confirmId === c.id}
+                                isDeleting={deletingId === c.id}
                               />
                             </td>
                           </tr>
@@ -369,6 +383,11 @@ export default function Admin() {
         )}
       </div>
     </div>
+
+    {toast && (
+      <Toast message={toast.message} type={toast.type} onClose={() => setToast(null)} />
+    )}
+    </>
   )
 }
 
@@ -403,14 +422,32 @@ function Pagination({ page, totalPages, total, onPrev, onNext }) {
   )
 }
 
-function DeleteButton({ onClick, loading }) {
+function DeleteButton({ onConfirm, onDelete, onCancel, isConfirming, isDeleting }) {
+  if (isConfirming) {
+    return (
+      <div className="flex items-center gap-1.5 whitespace-nowrap">
+        <button
+          onClick={onDelete}
+          className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-red-500/25 text-red-400 border border-red-500/50 hover:bg-red-500/35 transition-colors"
+        >
+          Có
+        </button>
+        <button
+          onClick={onCancel}
+          className="text-xs font-semibold px-2.5 py-1.5 rounded-lg bg-white/5 text-gray-400 border border-white/20 hover:border-white/40 transition-colors"
+        >
+          Hủy
+        </button>
+      </div>
+    )
+  }
   return (
     <button
-      onClick={onClick}
-      disabled={loading}
+      onClick={onConfirm}
+      disabled={isDeleting}
       className="text-xs font-semibold px-3 py-1.5 rounded-lg bg-red-500/10 text-red-400 border border-red-500/20 hover:bg-red-500/20 transition-colors disabled:opacity-40 disabled:cursor-not-allowed whitespace-nowrap"
     >
-      {loading ? 'Đang xóa...' : 'Xóa'}
+      {isDeleting ? 'Đang xóa...' : 'Xóa'}
     </button>
   )
 }
@@ -426,9 +463,25 @@ function EmptyState({ text }) {
 
 function LoadingRows() {
   return (
-    <div className="bg-white/5 border border-white/10 rounded-2xl py-16 text-center">
-      <div className="text-4xl mb-3">⏳</div>
-      <p className="text-gray-400">Đang tải...</p>
+    <div className="bg-white/5 border border-white/10 rounded-2xl overflow-hidden">
+      <div className="overflow-x-auto">
+        <table className="w-full text-sm">
+          <tbody>
+            {Array.from({ length: 5 }).map((_, i) => (
+              <tr key={i} className="border-b border-white/5 last:border-0">
+                <td className="px-4 py-4"><div className="skeleton h-3 w-6 rounded" /></td>
+                <td className="px-4 py-4"><div className="skeleton h-3 w-28 rounded" /></td>
+                <td className="px-4 py-4"><div className="skeleton h-3 w-24 rounded" /></td>
+                <td className="px-4 py-4"><div className="skeleton h-3 w-20 rounded" /></td>
+                <td className="px-4 py-4"><div className="skeleton h-3 w-32 rounded" /></td>
+                <td className="px-4 py-4"><div className="skeleton h-3 w-16 rounded" /></td>
+                <td className="px-4 py-4"><div className="skeleton h-3 w-20 rounded" /></td>
+                <td className="px-4 py-4"><div className="skeleton h-3 w-10 rounded" /></td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
     </div>
   )
 }

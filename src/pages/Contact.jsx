@@ -177,8 +177,16 @@ export default function Contact() {
 
           {/* Server error */}
           {serverError && (
-            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 text-sm">
-              {serverError}
+            <div className="bg-red-500/10 border border-red-500/30 rounded-xl p-4 text-red-400 text-sm flex items-start gap-2 relative">
+              <span className="mt-0.5 flex-shrink-0">⚠️</span>
+              <span className="flex-1">{serverError}</span>
+              <button
+                type="button"
+                onClick={() => setServerError('')}
+                className="flex-shrink-0 opacity-50 hover:opacity-100 transition-opacity ml-1"
+              >
+                ✕
+              </button>
             </div>
           )}
 

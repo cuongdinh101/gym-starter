@@ -6,6 +6,7 @@ const links = [
   { to: '/workout', label: 'Lịch Tập' },
   { to: '/nutrition', label: 'Dinh Dưỡng' },
   { to: '/bmi', label: 'Tính BMI' },
+  { to: '/blog', label: 'Blog' },
   { to: '/consultation', label: 'Tư Vấn' },
   { to: '/contact', label: 'Liên Hệ' },
 ]
@@ -86,9 +87,13 @@ export default function Navbar() {
         </div>
       </div>
 
-      {/* Mobile menu */}
-      {open && (
-        <div className="md:hidden bg-black/95 border-t border-white/10 px-4 py-4 flex flex-col gap-4">
+      {/* Mobile menu — always rendered, animated with max-height */}
+      <div
+        className={`md:hidden bg-black/95 border-white/10 overflow-hidden transition-all duration-300 ease-in-out ${
+          open ? 'max-h-96 opacity-100 border-t' : 'max-h-0 opacity-0'
+        }`}
+      >
+        <div className="px-4 py-4 flex flex-col gap-4">
           {links.map(l => (
             <Link
               key={l.to}
@@ -131,7 +136,7 @@ export default function Navbar() {
             </Link>
           )}
         </div>
-      )}
+      </div>
     </nav>
   )
 }

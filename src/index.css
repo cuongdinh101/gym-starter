@@ -1,5 +1,15 @@
 @import "tailwindcss";
 
+@keyframes shimmer {
+  0%   { background-position: -200% 0; }
+  100% { background-position:  200% 0; }
+}
+
+@keyframes toast-in {
+  from { transform: translateY(1rem); opacity: 0; }
+  to   { transform: translateY(0);     opacity: 1; }
+}
+
 @layer base {
   * {
     scroll-behavior: smooth;
@@ -25,12 +35,25 @@
     -webkit-text-fill-color: transparent;
     background-clip: text;
   }
+  .skeleton {
+    background: linear-gradient(
+      90deg,
+      rgba(255,255,255,0.04) 25%,
+      rgba(255,255,255,0.09) 50%,
+      rgba(255,255,255,0.04) 75%
+    );
+    background-size: 200% 100%;
+    animation: shimmer 1.6s infinite;
+  }
+  .toast-enter {
+    animation: toast-in 0.25s ease forwards;
+  }
   .card-hover {
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   .card-hover:hover {
     transform: translateY(-6px);
-    box-shadow: 0 20px 40px rgba(249, 115, 22, 0.2);
+    box-shadow: 0 24px 48px rgba(249, 115, 22, 0.18);
   }
   .btn-primary {
     background: linear-gradient(135deg, #f97316, #ef4444);
@@ -40,11 +63,12 @@
     border-radius: 9999px;
     border: none;
     cursor: pointer;
-    transition: opacity 0.2s, transform 0.2s;
+    transition: opacity 0.2s, transform 0.2s, box-shadow 0.2s;
   }
   .btn-primary:hover {
-    opacity: 0.9;
+    opacity: 0.92;
     transform: scale(1.04);
+    box-shadow: 0 0 28px rgba(249, 115, 22, 0.5);
   }
   .section-title {
     font-size: 2.5rem;

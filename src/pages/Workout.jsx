@@ -6,6 +6,7 @@ export default function Workout() {
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState(null)
   const [expanded, setExpanded] = useState(null)
+  const [showSlowHint, setShowSlowHint] = useState(false)
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/workouts`)
@@ -22,6 +23,12 @@ export default function Workout() {
         setLoading(false)
       })
   }, [])
+
+  useEffect(() => {
+    if (!loading) return
+    const t = setTimeout(() => setShowSlowHint(true), 5000)
+    return () => clearTimeout(t)
+  }, [loading])
 
   return (
     <div className="min-h-screen pt-24 pb-16 px-4">
@@ -46,9 +53,15 @@ export default function Workout() {
 
         {/* Loading */}
         {loading && (
-          <div className="text-center py-20 text-gray-400">
-            <div className="text-4xl mb-4">⏳</div>
-            <p>Đang tải lịch tập...</p>
+          <div className="space-y-4">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <div key={i} className="skeleton h-[72px] rounded-2xl" />
+            ))}
+            {showSlowHint && (
+              <p className="text-center text-sm text-gray-500 pt-2">
+                Server đang khởi động, vui lòng đợi thêm vài giây...
+              </p>
+            )}
           </div>
         )}
 
