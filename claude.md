@@ -127,12 +127,85 @@ API synchronous — dễ hiểu hơn cho người học, không cần callback/p
 **bcryptjs cho mật khẩu Admin:**
 Không lưu plain text ngay cả khi hardcode. Hash được tạo sẵn, compare khi login.
 
+## Deploy — Production URLs
+
+| Service | URL | Ghi chú |
+|---------|-----|---------|
+| GitHub | https://github.com/cuongdinh101/gym-starter | Source code |
+| Frontend (Vercel) | https://gym-starter-seven.vercel.app | React SPA |
+| Backend (Render) | https://gym-starter-api.onrender.com | Express API |
+
+### Cấu hình deploy
+
+**Vercel:**
+- Env var: `VITE_API_URL=https://gym-starter-api.onrender.com`
+- `vercel.json` rewrites `/(.*) → /index.html` để React Router hoạt động với direct URL access
+
+**Render:**
+- Env vars: `JWT_SECRET`, `FRONTEND_URL=https://gym-starter-seven.vercel.app`, `PORT` (tự set)
+- `server/.env.example` có template cho tất cả biến
+- `dotenv/config` import ở đầu `server/index.js`
+
+**CORS:** `origin: process.env.FRONTEND_URL || '*'` — chỉ cho phép Vercel domain gọi API production
+
+**API URL (frontend):** Tập trung tại `src/config/api.js`:
+```js
+const API_BASE_URL = import.meta.env.VITE_API_URL || "http://localhost:3001"
+export default API_BASE_URL
+```
+Tất cả 6 page files import từ đây thay vì inline `import.meta.env.VITE_API_URL`.
+
+**SQLite trên Render:** Ephemeral filesystem — db reset mỗi lần deploy. Đủ cho học/demo; cần PostgreSQL cho production thật.
+
+### Deploy lessons learned
+
+- Vite env vars (`VITE_*`) được bake vào build lúc build time — phải set trên Vercel dashboard trước khi deploy
+- React Router cần `vercel.json` rewrites — Vercel mặc định trả 404 cho các route không phải file tĩnh
+- Render `PORT` phải dùng `process.env.PORT` — không hardcode 3001
+- `catch {}` không log → không debug được trên cloud; cần `catch (err) { console.error(err) }`
+- Render Free tier có **cold start ~30 giây** sau khi không dùng — lần đầu gọi API chậm là bình thường, không phải lỗi code
+
+## Performance — Code Splitting & Loading UX (đã hoàn thành)
+
+### Fetch pattern theo trang
+
+| Trang | Fetch khi nào | Ghi chú |
+|-------|---------------|---------|
+| `/` (Home) | **Không fetch** | Load tĩnh ngay lập tức |
+| `/workout` | Khi user navigate đến | `useEffect []` — chỉ fetch 1 lần khi mount |
+| `/nutrition` | Khi user navigate đến | `useEffect []` — chỉ fetch 1 lần khi mount |
+| `/bmi` | **Không fetch** | Tính local |
+| `/admin` | Sau khi login và navigate đến | ProtectedRoute chặn trước khi mount |
+
+### Code splitting với React.lazy
+
+`App.jsx` dùng `React.lazy()` + `Suspense` cho 8 trang (trừ Home):
+
+```jsx
+import Home from './pages/Home'               // eager — landing page phải nhanh
+const Workout = lazy(() => import('./pages/Workout'))
+const Admin   = lazy(() => import('./pages/Admin'))   // chỉ tải khi vào /admin
+```
+
+- Bundle ban đầu chỉ chứa Home + React + Router (~235 KB)
+- Mỗi trang tải thêm 1 chunk JS nhỏ lần đầu navigate (~2–12 KB), sau đó browser cache
+
+### Cold start hint (Workout & Nutrition)
+
+Sau 5 giây vẫn loading → hiện text nhỏ:
+> "Server đang khởi động, vui lòng đợi thêm vài giây..."
+
+Dùng `useState(false)` + `useEffect` + `setTimeout(5000)` với cleanup `clearTimeout`.
+
 ## Việc nên làm tiếp theo (chưa làm)
 
-- **Pagination:** Admin hiện tải toàn bộ data — cần khi có > 100 bản ghi
-- **Input validation:** Thêm validate email format, độ dài field ở backend
-- **Deploy:** Chưa deploy lên server thật (Render, Railway, VPS...)
-- **Nâng database:** SQLite đủ dùng cho học và demo; lên production có thể migrate sang PostgreSQL
+- **MySQL/AWS RDS:** Thay SQLite bằng MySQL có persistent storage — Railway/PlanetScale cho cloud free tier
+- **Admin CRUD Workout/Nutrition:** Cho phép admin thêm/sửa/xóa lịch tập và bữa ăn qua giao diện
+- **Input validation backend:** Validate email format, độ dài field ở server
+- **Refresh token:** Token 8h hết hạn → user bị logout; thêm refresh token flow
+- **CI/CD:** GitHub Actions auto-deploy khi push main
+- **Custom domain:** Thêm domain riêng thay `*.vercel.app` / `*.onrender.com`
+- **UI polish:** Loading skeleton, animation, responsive tweaks
 
 ## Rules chi tiết
 
